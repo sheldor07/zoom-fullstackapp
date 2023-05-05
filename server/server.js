@@ -1,7 +1,7 @@
 const express = require("express");
 
 const app = express();
-
+const middleware = require("../middleware");
 app.use(express.json());
 
 const PORT = 3000;
@@ -16,6 +16,13 @@ app.use((err, req, res, next) => {
   const errorobj = Object.assign(defaultErr, err);
   return res.status(errorobj.status).json(errorobj.message);
 });
+//post request with jwt token
+
+app.post("/generate-signature", middleware.generateToken, (req, res) => {
+  const { signature } = res.locals.signature; 
+  return res.status(200).json({ signature });
+});
+
 app.use(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });
